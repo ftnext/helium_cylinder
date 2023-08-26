@@ -20,6 +20,7 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
 ]
+dependencies = ["helium", "chromedriver-autoinstaller"]
 dynamic = ["version"]
 
 [project.urls]
@@ -52,4 +53,4 @@ format_black = "black -l 79 helium_cylinder tests setup.py"
 format_isort = "isort --profile black -l 79 helium_cylinder tests setup.py"
 check = "task check_flake8 && task check_mypy"
 check_flake8 = "flake8 helium_cylinder tests"
-check_mypy = "mypy helium_cylinder tests"
+check_mypy = "mypy helium_cylinder tests --ignore-missing-imports"
