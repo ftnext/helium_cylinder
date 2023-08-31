@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 
-from selenium.webdriver import FirefoxOptions
+from selenium.webdriver import ChromeOptions, FirefoxOptions
 
 from helium_cylinder import decorators as d
 
@@ -71,7 +71,7 @@ class UsingChromeTestCase(TestCase):
         f()
 
         chromedriver_autoinstaller.install.assert_called_once_with()
-        start_chrome.assert_called_once_with(options=None)
+        start_chrome.assert_called_once_with(options=None, headless=False)
 
     def test_with_parenthesis(self, chromedriver_autoinstaller, start_chrome):
         @d.using_chrome()
@@ -81,11 +81,9 @@ class UsingChromeTestCase(TestCase):
         f()
 
         chromedriver_autoinstaller.install.assert_called_once_with()
-        start_chrome.assert_called_once_with(options=None)
+        start_chrome.assert_called_once_with(options=None, headless=False)
 
     def test_with_options(self, chromedriver_autoinstaller, start_chrome):
-        from selenium.webdriver import ChromeOptions
-
         options = MagicMock(spec=ChromeOptions)
 
         @d.using_chrome(options=options)
@@ -95,4 +93,28 @@ class UsingChromeTestCase(TestCase):
         f()
 
         chromedriver_autoinstaller.install.assert_called_once_with()
-        start_chrome.assert_called_once_with(options=options)
+        start_chrome.assert_called_once_with(options=options, headless=False)
+
+    def test_headless(self, chromedriver_autoinstaller, start_chrome):
+        @d.using_chrome(headless=True)
+        def f():
+            ...
+
+        f()
+
+        chromedriver_autoinstaller.install.assert_called_once_with()
+        start_chrome.assert_called_once_with(options=None, headless=True)
+
+    def test_headless_with_options(
+        self, chromedriver_autoinstaller, start_chrome
+    ):
+        options = MagicMock(spec=ChromeOptions)
+
+        @d.using_chrome(options=options, headless=True)
+        def f():
+            ...
+
+        f()
+
+        chromedriver_autoinstaller.install.assert_called_once_with()
+        start_chrome.assert_called_once_with(options=options, headless=True)
